@@ -90,11 +90,11 @@ class Chef
         vg = lvm.volume_groups[new_resource.group]
         # If logical volume is not activated, activate it
         if vg.nil? || lvol = vg.logical_volumes.find { |lv| lv.name == name }
-          if lvol.active
+          if lvol.state == :active
             Chef::Log.info "Logical volume '#{name}' already activated."
           else
             Chef::Log.info "Activating logical volume '#{name}'"
-            command = "lvchange -aly #{lvol.path}"
+            command = "lvchange -aly #{vg.name}/#{name}"
             Chef::Log.debug "Executing lvm command: '#{command}'"
             output = lvm.raw(command)
             Chef::Log.debug "Command output: '#{output}'"
